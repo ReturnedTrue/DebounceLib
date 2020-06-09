@@ -11,6 +11,7 @@ local FOLDER_DEFAULT_NAME = string.format("%s_Events", Internals.GetLibName());
 local EVENT_DEFAULT_NAME = "Event_%d";
 local ERR_START = Internals.GetErrStart();
 local ALREADY_EXISTS = ERR_START .. "Event of Name %s already exists!";
+local DOES_NOT_EXIST = ERR_START .. "Event of Name %s doesn't exist!";
 
 --// Class
 local DebounceLib = {};
@@ -60,6 +61,18 @@ function DebounceLib:CreateEvent(Event, Time, Name)
     Bindable.Parent = self.Folder;
 
     return Bindable.Event;
+end
+
+function DebounceLib:GetEvent(Name)
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    
+    return self.Folder[Name].Event;
+end
+
+function DebounceLib:DestroyEvent(Name)
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    
+    self.Folder[Name]:Destroy();
 end
 
 --// Init
