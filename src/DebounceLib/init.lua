@@ -75,9 +75,10 @@ function DebounceLib:DestroyEvent(Name)
     self.Folder[Name]:Destroy();
 end
 
-function DebounceLib:DestroyDebounce(Key)
-    assert(self.Folder:FindFirstChild(Key), "The Key you have entered does not exist!!")
-    self.Folder[Key]:FindFirstChild("Debounce").Value = 0;
+function DebounceLib:ResetDebounce(Name)
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    
+    self.Folder[Name].Debounce.Value = 0;
 end
 
 --// Init
