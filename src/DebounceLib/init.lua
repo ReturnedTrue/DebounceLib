@@ -18,5 +18,10 @@ function DebounceLib:GetEvent(Event, Time, Name)
     --// TODO
 end
 
+function DebounceLib:DestroyDebounce(Key)
+    assert(self.Folder:FindFirstChild(Key), "The Key you have entered does not exist!!")
+    self.Folder[Key]:FindFirstChild("Debounce").Value = 0;
+end
+
 --// Init
 return DebounceLib;
