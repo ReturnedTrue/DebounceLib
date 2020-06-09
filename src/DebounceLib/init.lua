@@ -52,7 +52,11 @@ function DebounceLib:CreateEvent(Event, Time, Name)
     Debounce.Name = "Debounce";
     Debounce.Parent = Bindable;
 
-    Event:Connect(function(...)
+    local Connection = Instance.new("ObjectValue");
+    Connection.Name = "Connection";
+    Connection.Parent = Bindable;
+
+    Connection.Value = Event:Connect(function(...)
         if ((tick() - Debounce.Value) >= Time) then
             Bindable:Fire(...);
         end
@@ -64,21 +68,41 @@ function DebounceLib:CreateEvent(Event, Time, Name)
 end
 
 function DebounceLib:GetEvent(Name)
+    Internals.TypeCheck({Name}, {"string"}, 1, "GetEvent");
     assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
     return self.Folder[Name].Event;
 end
 
 function DebounceLib:DestroyEvent(Name)
+    Internals.TypeCheck({Name}, {"string"}, 1, "DestroyEvent");
     assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
+    local Connection = self.Folder[Name].Connection.Value
+    if (Connection) then
+        Connection:Disconnect();
+    end
+
     self.Folder[Name]:Destroy();
 end
 
+function DebounceLib:DestroyAllEvents()
+    for _, Event in ipairs(self.Folder:GetChildren()) do
+        DebounceLib:DestroyEvent(Event.Name);
+    end
+end
+
 function DebounceLib:ResetDebounce(Name)
+    Internals.TypeCheck({Name}, {"string"}, 1, "ResetDebounce");
     assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
-    
+
     self.Folder[Name].Debounce.Value = 0;
+end
+
+function DebounceLib:ResetAllDebounces()
+    for _, Event in ipairs(self.Folder:GetChildren()) do
+        DebounceLib:ResetDebounce(Event.Name);
+    end
 end
 
 --// Init
