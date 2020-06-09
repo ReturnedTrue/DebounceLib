@@ -78,7 +78,7 @@ function DebounceLib:DestroyEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "DestroyEvent");
     assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
-    local Connection = self.Folder[Name].Connection.Value
+    local Connection = self.Folder[Name].Connection.Value;
     if (Connection) then
         Connection:Disconnect();
     end
