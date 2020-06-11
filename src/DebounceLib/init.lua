@@ -40,7 +40,7 @@ function DebounceLib:CreateEvent(Event, Time, Name)
     Internals.TypeCheck({Event, Time, Name}, {"iRBXScriptSignal", "number", "string"}, 2, "GetEvent");
 
     if (Name) then
-        assert(self.Folder:FindFirstChild(Name), string.format(ALREADY_EXISTS, Name));
+        assert(not self.Folder:FindFirstChild(Name), string.format(ALREADY_EXISTS, Name));
     else
         Name = string.format(EVENT_DEFAULT_NAME, self.Folder:GetChildren());
     end
@@ -69,14 +69,14 @@ end
 
 function DebounceLib:GetEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "GetEvent");
-    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
     return self.Folder[Name].Event;
 end
 
 function DebounceLib:DestroyEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "DestroyEvent");
-    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
     local Connection = self.Folder[Name].Connection.Value;
     if (Connection) then
@@ -88,20 +88,20 @@ end
 
 function DebounceLib:DestroyAllEvents()
     for _, Event in ipairs(self.Folder:GetChildren()) do
-        DebounceLib:DestroyEvent(Event.Name);
+        self:DestroyEvent(Event.Name);
     end
 end
 
 function DebounceLib:ResetDebounce(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "ResetDebounce");
-    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
 
     self.Folder[Name].Debounce.Value = 0;
 end
 
 function DebounceLib:ResetAllDebounces()
     for _, Event in ipairs(self.Folder:GetChildren()) do
-        DebounceLib:ResetDebounce(Event.Name);
+        self:ResetDebounce(Event.Name);
     end
 end
 

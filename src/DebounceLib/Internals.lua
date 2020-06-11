@@ -13,9 +13,9 @@ local Internals = {};
 --// Functions
 function Internals.TypeCheck(Values, Types, Required, FunctionName)
     for i, Type in ipairs(Types) do
-        assert(i <= Required and Values[i] == nil, string.format(WAS_NOT_GIVEN, i, Type, FunctionName, typeof(Values[i])));
-        assert(string.sub(Type, 1, 1) ~= "i" and not typeof(Type) == typeof(Values[i]), string.format(WRONG_TYPE, i, Type, FunctionName));
-        assert(string.sub(Type, 1, 1) == "i" and Values[i]:IsA(string.sub(Type, 2, -1)), string.format(WRONG_CLASS, i, Type, FunctionName));
+        assert(not (i <= Required and Values[i] == nil), string.format(WAS_NOT_GIVEN, i, Type, FunctionName, typeof(Values[i])));
+        assert(not (string.sub(Type, 1, 1) ~= "i" and Type == typeof(Values[i])), string.format(WRONG_TYPE, i, Type, FunctionName));
+        assert(not (string.sub(Type, 1, 1) == "i" and Values[i]:IsA(string.sub(Type, 2, -1))), string.format(WRONG_CLASS, i, Type, FunctionName));
     end
 end
 
