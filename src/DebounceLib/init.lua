@@ -10,8 +10,8 @@ local Internals = require(script.Internals);
 local FOLDER_DEFAULT_NAME = string.format("%s_Events", Internals.GetLibName());
 local EVENT_DEFAULT_NAME = "Event_%d";
 local ERR_START = Internals.GetErrStart();
-local ALREADY_EXISTS = ERR_START .. "Event of Name %s already exists!";
-local DOES_NOT_EXIST = ERR_START .. "Event of Name %s doesn't exist!";
+local ALREADY_EXISTS = ERR_START .. "Event of Name %s already exists";
+local DOES_NOT_EXIST = ERR_START .. "Event of Name %s doesn't exist";
 
 --// Class
 local DebounceLib = {};
@@ -37,12 +37,12 @@ function DebounceLib.init(Folder)
 end
 
 function DebounceLib:CreateEvent(Event, Time, Name)
-    Internals.TypeCheck({Event, Time, Name}, {"iRBXScriptSignal", "number", "string"}, 2, "GetEvent");
+    Internals.TypeCheck({Event, Time, Name}, {"RBXScriptSignal", "number", "string"}, 2, "GetEvent");
 
     if (Name) then
         assert(not self.Folder:FindFirstChild(Name), string.format(ALREADY_EXISTS, Name));
     else
-        Name = string.format(EVENT_DEFAULT_NAME, self.Folder:GetChildren());
+        Name = string.format(EVENT_DEFAULT_NAME, #self.Folder:GetChildren());
     end
 
     local Bindable = Instance.new("BindableEvent");
@@ -52,14 +52,20 @@ function DebounceLib:CreateEvent(Event, Time, Name)
     Debounce.Name = "Debounce";
     Debounce.Parent = Bindable;
 
-    local Connection = Instance.new("ObjectValue");
-    Connection.Name = "Connection";
-    Connection.Parent = Bindable;
+    local Delete = Instance.new("BindableEvent");
+    Delete.Name = "Delete";
+    Delete.Parent = Bindable;
 
-    Connection.Value = Event:Connect(function(...)
+    local Connection = Event:Connect(function(...)
         if ((tick() - Debounce.Value) >= Time) then
+            Debounce.Value = tick();
             Bindable:Fire(...);
         end
+    end)
+
+    Delete.Event:Connect(function()
+        Connection:Disconnect();
+        Bindable:Destroy();
     end)
 
     Bindable.Parent = self.Folder;
@@ -69,21 +75,20 @@ end
 
 function DebounceLib:GetEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "GetEvent");
-    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
     return self.Folder[Name].Event;
 end
 
 function DebounceLib:DestroyEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "DestroyEvent");
-    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
-    local Connection = self.Folder[Name].Connection.Value;
-    if (Connection) then
-        Connection:Disconnect();
-    end
+    local Delete = self.Folder[Name]:FindFirstChild("Delete");
 
-    self.Folder[Name]:Destroy();
+    if (Delete) then
+        Delete:Fire();
+    end
 end
 
 function DebounceLib:DestroyAllEvents()
@@ -94,7 +99,7 @@ end
 
 function DebounceLib:ResetDebounce(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "ResetDebounce");
-    assert(not self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
 
     self.Folder[Name].Debounce.Value = 0;
 end
