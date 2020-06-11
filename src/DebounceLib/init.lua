@@ -37,7 +37,7 @@ function DebounceLib.init(Folder)
 end
 
 function DebounceLib:CreateEvent(Event, Time, Name)
-    Internals.TypeCheck({Event, Time, Name}, {"RBXScriptSignal", "number", "string"}, 2, "GetEvent");
+    Internals.TypeCheck({Event, Time, Name}, {"RBXScriptSignal", "number", "string"}, 2, "CreateEvent");
 
     if (Name) then
         assert(not self.Folder:FindFirstChild(Name), string.format(ALREADY_EXISTS, Name));
@@ -78,6 +78,12 @@ function DebounceLib:GetEvent(Name)
     assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
     
     return self.Folder[Name].Event;
+end
+
+function DebounceLib:WaitForEvent(Name)
+    Internals.TypeCheck({Name}, {"string"}, 1, "WaitForEvent");
+
+    return self.Folder:WaitForChild(Name).Event;
 end
 
 function DebounceLib:DestroyEvent(Name)
