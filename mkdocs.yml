@@ -1,0 +1,24 @@
+site_name: DebounceLib Docs
+site_description: Documentation for DebounceLib
+site_author: ReturnedTrue
+
+repo_name: ReturnedTrue/DebounceLib
+repo_url: https://github.com/ReturnedTrue/DebounceLib
+
+markdown_extensions:
+  - admonition
+  - codehilite
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Getting Started: started.md
+  - API-reference: reference.md
+
+theme: 
+  name: material
+  language: en
+  palette:
+    primary: black
+    accent: cyan
+
