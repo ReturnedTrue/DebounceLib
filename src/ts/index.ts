@@ -50,7 +50,9 @@ export class DebounceLib {
     */
     public createEvent(event: RBXScriptSignal, time: number, name?: string) {
         if (name) {
-            assert(!this.folder.FindFirstChild(name), ALREADY_EXISTS.format(name));
+            if (this.folder.FindFirstChild(name)) {
+                error(ALREADY_EXISTS.format(name), 2);
+            }
 
         } else {
             name = EVENT_DEFAULT_NAME.format(this.folder.GetChildren().size());
@@ -90,7 +92,9 @@ export class DebounceLib {
      * @returns An RBXScriptSignal which can be Connected or Waited on
     */
     public getEvent(name: string) {
-        return this._getEventInstance(name).Event;
+        const event = this._getEventInstance(name);
+
+        return event.Event;
     }
 
     /** 
@@ -149,10 +153,12 @@ export class DebounceLib {
     }
 
     private _getEventInstance(name: string) {
-        const found = this.folder.FindFirstChild(name) as UndefinedBindable;
-        assert(found, DOES_NOT_EXIST.format(name));  
+        const found = this.folder.FindFirstChild(name) as UndefinedBindable
+        if (!found) {
+            error(DOES_NOT_EXIST.format(name), 2);  
+        }  
 
-        return found;    
+        return found as BindableEvent;
     }
 }
 
