@@ -1,1 +1,4 @@
 site/
+out/
+node_modules/
+.vscode/

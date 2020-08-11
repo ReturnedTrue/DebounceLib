@@ -1,0 +1,6 @@
+.vscode/
+docs/
+site/
+src
+mkdocs.yml
+.gitignore

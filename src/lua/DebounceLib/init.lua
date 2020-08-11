@@ -1,17 +1,16 @@
 --// Written by ReturnedTrue and sebi210
 
---// Dependencies
+--// Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage");
 
 --// Modules
 local Internals = require(script.Internals);
 
 --// Constants
-local FOLDER_DEFAULT_NAME = string.format("%s_Events", Internals.GetLibName());
+local FOLDER_DEFAULT_NAME = Internals.LibName .. "_Events";
 local EVENT_DEFAULT_NAME = "Event_%d";
-local ERR_START = Internals.GetErrStart();
-local ALREADY_EXISTS = ERR_START .. "Event of Name %s already exists";
-local DOES_NOT_EXIST = ERR_START .. "Event of Name %s doesn't exist";
+local ALREADY_EXISTS = Internals.ErrStart .. "Event of Name %s already exists";
+local DOES_NOT_EXIST = Internals.ErrStart .. "Event of Name %s doesn't exist";
 
 --// Class
 local DebounceLib = {};

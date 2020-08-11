@@ -1,0 +1,13 @@
+{
+  "name": "@rbxts/debouncelib",
+  "version": "1.0.0",
+  "description": "A small library for applying a simple debounce to events.",
+  "main": "out/index.js",
+  "keywords": [],
+  "author": "returnedtrue",
+  "license": "ISC",
+  "private": false,
+  "devDependencies": {
+    "@rbxts/types": "^1.0.388"
+  }
+}

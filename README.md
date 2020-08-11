@@ -1,4 +1,4 @@
-![Icon](DebounceLibLogo.png)
+![Icon](images/DebounceLibLogo.png)
 ___
 ![Contributions](https://img.shields.io/badge/contributions-open-brightgreen.svg)
 ![LICENSE](https://img.shields.io/badge/license-MIT-important.svg)
