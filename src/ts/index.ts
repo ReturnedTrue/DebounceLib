@@ -11,10 +11,19 @@ const DOES_NOT_EXIST = ERR_START + "Event of Name %s doesn't exist";
 const DEFAULT_FOLDER_NAME = LIB_NAME + "_Events";
 const EVENT_DEFAULT_NAME = "Event_%d";
 
+// Types
+type UndefinedBindable = BindableEvent | undefined;
+type UndefinedNumberValue = NumberValue | undefined;
+
 // Class
 export class DebounceLib {
-    public readonly folder: Folder;
+    private readonly folder: Folder;
 
+    /** 
+     * @constructor Create a DebounceLib instance with all the methods
+     * @param folder Optional, holds all the debounced events inside
+     * @returns The DebounceLib instance which uses the supplied Folder or a default one
+    */
     constructor(folder?: Folder) {
         if (!folder) {
             const alreadyMade = ReplicatedStorage.FindFirstChild(DEFAULT_FOLDER_NAME) as Folder | undefined;
@@ -32,6 +41,13 @@ export class DebounceLib {
         this.folder = folder;
     }
 
+    /** 
+     * @createEvent Create a debounced event from an existing event
+     * @param event The existing event to apply a debounce upon
+     * @param time The amount of time the debounce should last
+     * @param name Optional, the name of the event which can be used in getEvent / waitForEvent
+     * @returns An RBXScriptSignal which can be Connected or Waited on
+    */
     public createEvent(event: RBXScriptSignal, time: number, name?: string) {
         if (name) {
             assert(!this.folder.FindFirstChild(name), ALREADY_EXISTS.format(name));
@@ -66,6 +82,77 @@ export class DebounceLib {
         bindable.Parent = this.folder;
 
         return bindable.Event;
+    }
+
+    /** 
+     * @getEvent Grab an event of the given name, please use waitForEvent if you aren't sure that it'll exist
+     * @param name The name of the event
+     * @returns An RBXScriptSignal which can be Connected or Waited on
+    */
+    public getEvent(name: string) {
+        return this._getEventInstance(name).Event;
+    }
+
+    /** 
+     * @waitForEvent Wait for an event of the given name
+     * @param name The name of the event
+     * @returns An RBXScriptSignal which can be Connected or Waited on
+    */
+    public waitForEvent(name: string) {
+        const found = this.folder.WaitForChild(name) as BindableEvent;
+
+        return found.Event;
+    }
+
+    /** 
+     * @destroyEvent Destroy an event of the given name which removes all connections
+     * @param name The name of the event
+    */
+    public destroyEvent(name: string) {
+        const event = this._getEventInstance(name);
+        const del = event.FindFirstChild("Delete") as UndefinedBindable;
+
+        if (del) {
+            del.Fire();
+        }
+    }
+
+    /** 
+     * @destroyAllEvents Destroys every event which removes all connections
+    */
+    public destroyAllEvents() {
+        this.folder.GetChildren().forEach((event) => {
+            this.destroyEvent(event.Name);
+        })
+    }
+
+    /** 
+     * @resetDebounce Resets the debounce of an event that has the given name, which allows it to run again without any cooldown
+     * @param name The name of the event
+    */
+    public resetDebounce(name: string) {
+        const event = this._getEventInstance(name);
+        const debounce = event.FindFirstChild("Debounce") as UndefinedNumberValue;
+
+        if (debounce) {
+            debounce.Value = 0;
+        }
+    }
+
+    /** 
+     * @resetAllDebounces Resets the debounce of every event, which allows them to run again without any cooldown
+    */
+    public resetAllDebounces() {
+        this.folder.GetChildren().forEach((event) => {
+            this.resetDebounce(event.Name);
+        })
+    }
+
+    private _getEventInstance(name: string) {
+        const found = this.folder.FindFirstChild(name) as UndefinedBindable;
+        assert(found, DOES_NOT_EXIST.format(name));  
+
+        return found;    
     }
 }
 

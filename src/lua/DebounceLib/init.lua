@@ -74,9 +74,11 @@ end
 
 function DebounceLib:GetEvent(Name)
     Internals.TypeCheck({Name}, {"string"}, 1, "GetEvent");
-    assert(self.Folder:FindFirstChild(Name), string.format(DOES_NOT_EXIST, Name));
+
+    local Found = self.Folder:FindFirstChild(Name);
+    assert(Found, string.format(DOES_NOT_EXIST, Name));
     
-    return self.Folder[Name].Event;
+    return Found.Event;
 end
 
 function DebounceLib:WaitForEvent(Name)
