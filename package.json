@@ -1,15 +1,18 @@
 {
   "name": "@rbxts/debouncelib",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "A small library for applying a simple debounce to events.",
   "main": "out/index.d.ts",
   "keywords": ["roblox-ts", "rbxts", "roblox", "debounce", "simple"],
   "author": "returnedtrue",
   "license": "MIT",
   "private": false,
+  "publishConfig": {
+	"access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ReturnedTrue/DebounceLib.git"
+    "url": "git://github.com/ReturnedTrue/DebounceLib.git"
   },
   "devDependencies": {
     "@rbxts/types": "^1.0.388"
