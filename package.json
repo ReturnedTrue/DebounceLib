@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/debouncelib",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A small library for applying a simple debounce to events.",
   "main": "out/index.d.ts",
   "keywords": ["roblox-ts", "rbxts", "roblox", "debounce", "simple"],
